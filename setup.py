@@ -55,6 +55,6 @@ setup(name='latlon-utils',
           osp.join('latlon_utils', 'data', '*'),
           ]},
       include_package_data=True,
-      tests_require=['pytest', 'rasterio', 'xarray'],
+      tests_require=['pytest', 'rasterio', 'xarray', 'pytest-cov'],
       cmdclass={'test': PyTest},
       zip_safe=False)
