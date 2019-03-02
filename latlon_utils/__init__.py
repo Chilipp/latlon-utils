@@ -7,6 +7,11 @@ import numpy as np
 import pandas as pd
 
 
+__version__ = '0.0.1'
+
+__author__ = 'Philipp S. Sommer'
+
+
 #: Variables in the WorldClim v2.0 dataset
 worldclim_variables = {
     'tmin': 'minimum temperature (degC)',
