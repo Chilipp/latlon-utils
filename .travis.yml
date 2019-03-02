@@ -1,0 +1,49 @@
+language: generic  # we use conda anyway
+sudo: false # use container based build
+
+env:
+    matrix:
+        - PYTHON_VERSION=3.7
+
+os:
+    - linux
+
+before_install:
+    # increase open files limit
+    - ulimit -a
+    - ulimit -Sn 10000
+    - ulimit -a
+      # select the os name for the conda installer
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+          OS_NAME=MacOSX;
+      else
+          OS_NAME=Linux;
+      fi
+    # Install Miniconda.
+    - |
+      echo ""
+      echo "Installing a fresh version of Miniconda."
+      MINICONDA_URL="https://repo.continuum.io/miniconda"
+      MINICONDA_FILE="Miniconda3-latest-${OS_NAME}-x86_64.sh"
+      curl -L -O "${MINICONDA_URL}/${MINICONDA_FILE}"
+      bash $MINICONDA_FILE -bp $HOME/miniconda3
+    - source $HOME/miniconda3/bin/activate root
+    - hash -r
+
+install:
+    - |
+        echo ""
+        echo "Configuring conda."
+        conda config --set always_yes yes --set changeps1 no
+        conda config --add channels conda-forge
+        conda config --add channels chilipp/label/dev
+        conda config --add channels chilipp/label/master
+        conda config --add channels chilipp
+        conda update -q conda
+    - conda install xarray dask rasterio netCDF4
+    - conda info -a
+    - conda list
+    - pip install .
+
+script:
+    - python setup.py test -a "-v"
