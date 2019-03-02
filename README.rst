@@ -1,6 +1,8 @@
 Retrieve WorldClim climate and other information for lat-lon grid cells
 =======================================================================
 
+|travis| |codecov| |version| |github| |supported-versions| |supported-implementations|
+
 This repository contains utility functions to retrieve information for given
 latitudes and longitude.
 
@@ -135,3 +137,28 @@ variable. To use, for example the 5 minutes resolutions, simply run::
 .. _pandas: https://pandas.pydata.org/
 .. _conda: https://conda.io/projects/conda/en/latest/
 .. _shapely: https://shapely.readthedocs.io/en/latest/
+
+
+.. |travis| image:: https://travis-ci.org/Chilipp/latlon-utils.svg?branch=master
+    :alt: Travis
+    :target: https://travis-ci.org/Chilipp/latlon-utils
+
+.. |codecov| image:: https://codecov.io/gh/Chilipp/latlon-utils/branch/master/graph/badge.svg
+    :alt: Coverage
+    :target: https://codecov.io/gh/Chilipp/latlon-utils
+
+.. |version| image:: https://img.shields.io/pypi/v/latlon-utils.svg?style=flat
+    :alt: PyPI Package latest release
+    :target: https://pypi.python.org/pypi/latlon-utils
+
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/latlon-utils.svg?style=flat
+    :alt: Supported versions
+    :target: https://pypi.python.org/pypi/latlon-utils
+
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/latlon-utils.svg?style=flat
+    :alt: Supported implementations
+    :target: https://pypi.python.org/pypi/latlon-utils
+
+.. |github| image:: https://img.shields.io/github/release/Chilipp/latlon-utils.svg
+    :target: https://github.com/Chilipp/latlon-utils/releases/latest
+    :alt: Latest github release
