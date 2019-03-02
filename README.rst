@@ -97,12 +97,13 @@ Get the climate for 50 degrees north and 10 degrees east::
 
 Data download
 -------------
+This package is built upon freely available datasets but does not contain any
+data. This data is downloaded on request (see the next section). In particular,
+the `get_climate` method uses the data from [WorldClim2.0]_, the `get_country`
+function uses the `datasets/geo-countries`_ repository.
 
 Download directory
 ******************
-This package is built upon other datasets, in particular the
-`datasets/geo-countries`_ repository and the WorldClim_ dataset.
-
 To download and process the necessary datasets, run::
 
     python -m latlon_utils.download
@@ -128,6 +129,11 @@ other resolutions in the python functions or via the ``LATLONRES`` environment
 variable. To use, for example the 5 minutes resolutions, simply run::
 
     export LATLONRES='5m'
+
+
+References
+----------
+.. [WorldClim2.0] Fick, S.E. and R.J. Hijmans, 2017. Worldclim 2: New 1-km spatial resolution climate surfaces for global land areas. International Journal of Climatology. http://worldclim.org/
 
 .. _WorldClim: http://worldclim.org/
 .. _datasets/geo-countries: https://github.com/datasets/geo-countries
