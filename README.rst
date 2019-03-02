@@ -16,9 +16,9 @@ xarray_ (you can skip this if you already downloaded the data) via::
 
     conda install rasterio xarray
 
-Then install ``latlng_utils`` via::
+Then install ``latlon_utils`` via::
 
-    pip install latlng_utils
+    pip install latlon_utils
 
 or from the source directory via::
 
@@ -31,14 +31,14 @@ function. Use these like
 
 Get the country for 50 degrees north and 10 degrees east::
 
-    >>> from latlng_utils import get_country
+    >>> from latlon_utils import get_country
 
     >>> get_country(50, 10)
     'Germany'
 
 Get the climate for 50 degrees north and 10 degrees east::
 
-    >>> from latlng_utils import get_climate
+    >>> from latlon_utils import get_climate
 
     # limit the number of columns printed by pandas
     >>> import pandas; pandas.options.display.max_columns = 5
@@ -103,29 +103,29 @@ datasets/geo-countries_ repository and the WorldClim_ dataset.
 
 To download and process the necessary datasets, run::
 
-    python -m latlng_utils.download
+    python -m latlon_utils.download
 
-(see ``python -m latlng_utils.download --help`` for available options).
+(see ``python -m latlon_utils.download --help`` for available options).
 
 We download the GeoTIFF files from WorldClim_ and transform them to netCDF
 datasets. The default directory to store the data is in
-``$HOME/.local/share/latlng_utils``, where ``$HOME`` stands for the users home
-directory. If you want to use a different directory, set the ``LATLNGDATA``
+``$HOME/.local/share/latlon_utils``, where ``$HOME`` stands for the users home
+directory. If you want to use a different directory, set the ``LATLONDATA``
 variable, e.g.::
 
-    export LATLNGDATA=$HOME/my_data
-    python download.py $LATLNGDATA
+    export LATLONDATA=$HOME/my_data
+    python download.py $LATLONDATA
 
-The ``LATLNGDATA`` environment variable is necessary to ensure that the python
+The ``LATLONDATA`` environment variable is necessary to ensure that the python
 package finds the data later again.
 
 WorldClim resolutions
 *********************
 The default resolution that we use is ``10m``. However, you can also specify
-other resolutions in the python functions or via the ``LATLNGRES`` environment
+other resolutions in the python functions or via the ``LATLONRES`` environment
 variable. To use, for example the 5 minutes resolutions, simply run::
 
-    export LATLNGRES='5m'
+    export LATLONRES='5m'
 
 .. _WorldClim: http://worldclim.org/
 .. _datasets/geo-countries: https://github.com/datasets/geo-countries

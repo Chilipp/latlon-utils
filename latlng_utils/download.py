@@ -9,7 +9,7 @@ import glob
 import re
 import datetime as dt
 import tempfile
-from latlng_utils import (
+from latlon_utils import (
     get_data_dir, worldclim_variables, worldclim_resolutions, __version__)
 
 
@@ -44,7 +44,7 @@ def download_wc_variable(name, outdir=None, res='5m', lat=None, lon=None):
             water vapor pressure (kPa)
     outdir: str
         The target directory. If None, the default data directory for the
-        latlng_utils (see the :func:`latlng_utils.get_data_dir` function) is
+        latlon_utils (see the :func:`latlon_utils.get_data_dir` function) is
         used
     res: str
         The resolution string. One out of ``'10m', '5m', '2.5m'`` and ``'30s'``
@@ -118,7 +118,7 @@ def download_geo_countries(outdir=None):
     ----------
     outdir: str
         The target directory. If None, the default data directory for the
-        latlng_utils (see the :func:`latlng_utils.get_data_dir` function) is
+        latlon_utils (see the :func:`latlon_utils.get_data_dir` function) is
         used
 
     Returns

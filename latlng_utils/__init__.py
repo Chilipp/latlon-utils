@@ -25,8 +25,8 @@ worldclim_resolutions = ['10m', '5m', '2.5m', '30s']
 def get_data_dir():
     """Get the data directory where the downloads are stored.
 
-    You can either set this with the ``LATLNGDATA`` environment variable or we
-    use ``$HOME/.local/share/latlng_utils``.
+    You can either set this with the ``LATLONDATA`` environment variable or we
+    use ``$HOME/.local/share/latlon_utils``.
 
     Returns
     -------
@@ -37,8 +37,8 @@ def get_data_dir():
     See Also
     --------
     get_data_file: To retrieve the path to a file in this directory"""
-    ret = os.getenv('LATLNGDATA', osp.join(osp.expanduser("~"), '.local',
-                                           'share', 'latlng_utils'))
+    ret = os.getenv('LATLONDATA', osp.join(osp.expanduser("~"), '.local',
+                                           'share', 'latlon_utils'))
     if not osp.exists(ret):
         os.makedirs(ret)
     return ret
@@ -50,9 +50,9 @@ def get_wc_resolution(res):
     Parameters
     ----------
     res: {'10m', '5m', '2.5m', '30s'}
-        If None, the ``LATLNGRES`` environment variable is used. If this is not
+        If None, the ``LATLONRES`` environment variable is used. If this is not
         set, we set the default resolution to '10m'"""
-    return res or os.getenv("LATLNGRES", '10m')
+    return res or os.getenv("LATLONRES", '10m')
 
 
 def get_data_file(fname, download=True):
@@ -67,13 +67,13 @@ def get_data_file(fname, download=True):
     ret = osp.join(get_data_dir(), fname)
     if not osp.exists(ret):
         if fname == 'countries.geojson':
-            from latlng_utils.download import download_geo_countries
+            from latlon_utils.download import download_geo_countries
             download_geo_countries()
             return ret
         elif fname in starmap(
                 '{}_{}.nc'.format,
                 product(worldclim_variables, worldclim_resolutions)):
-            from latlng_utils.download import download_wc_variable
+            from latlon_utils.download import download_wc_variable
             var, res = osp.splitext(fname)[0].split('_')
             download_wc_variable(var, res=res)
             return ret
@@ -103,7 +103,7 @@ def get_country(lat, lon):
     --------
     Get the country for 50 degrees north and 10 degrees east::
 
-        >>> from latlng_utils import get_country
+        >>> from latlon_utils import get_country
 
         >>> get_country(50, 10)
         'Germany'
@@ -170,7 +170,7 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
             water vapor pressure (kPa)
     res: str
         The resolution to use. If None, it defaults to the
-        ``LATLNGRES`` environment variable or ``'10m'``
+        ``LATLONRES`` environment variable or ``'10m'``
 
     Returns
     -------
@@ -188,7 +188,7 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
     --------
     Get the climate for 50 degrees north and 10 degrees east::
 
-        >>> from latlng_utils import get_climate
+        >>> from latlon_utils import get_climate
 
         # limit the number of columns printed by pandas
         >>> import pandas; pandas.options.display.max_columns = 5

@@ -65,6 +65,6 @@ target/
 *.ipynb_checkpoints/
 
 # data directory
-latlng_utils/data/*
-!latlng_utils/data/README.rst
+latlon_utils/data/*
+!latlon_utils/data/README.rst
 

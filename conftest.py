@@ -1,3 +1,3 @@
-import latlng_utils.download
+import latlon_utils.download
 
-latlng_utils.download.SILENT = True
+latlon_utils.download.SILENT = True

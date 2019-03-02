@@ -8,7 +8,7 @@ import zipfile
 import glob
 
 # make the target folder
-outdir = osp.join(osp.dirname(__file__), 'latlng_utils', 'data')
+outdir = osp.join(osp.dirname(__file__), 'latlon_utils', 'data')
 
 lon = None
 lat = None

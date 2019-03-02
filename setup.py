@@ -24,7 +24,7 @@ def readme():
         return f.read()
 
 
-setup(name='latlng-utils',
+setup(name='latlon-utils',
       version='0.0.1',
       description=('Retrieve WorldClim climate and other information for '
                    'lat-lon grid cells'),
@@ -41,7 +41,7 @@ setup(name='latlng-utils',
         'Operating System :: OS Independent',
       ],
       keywords='worldclim geo-countries latitude longitude',
-      url='https://github.com/Chilipp/latlng-utils',
+      url='https://github.com/Chilipp/latlon-utils',
       author='Philipp Sommer',
       author_email='philipp.sommer@unil.ch',
       license="GPLv3",
@@ -51,8 +51,8 @@ setup(name='latlng-utils',
           'shapely',
           'pandas',
       ],
-      package_data={'latlng-utils': [
-          osp.join('latlng_utils', 'data', '*'),
+      package_data={'latlon-utils': [
+          osp.join('latlon_utils', 'data', '*'),
           ]},
       include_package_data=True,
       tests_require=['pytest', 'rasterio', 'xarray'],
