@@ -181,7 +181,8 @@ if __name__ == '__main__':
         else:
             variables = args.worldclim_variables
         for v in variables:
-            download_wc_variable(v, outdir, lat, lon)
+            download_wc_variable(v, outdir, lat=lat, lon=lon,
+                                 res=args.worldclim_resolution)
 
     # download countries.geojson
     download_geo_countries(outdir)
