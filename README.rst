@@ -99,7 +99,7 @@ Data download
 Download directory
 ******************
 This package is built upon other datasets, in particular the
-datasets/geo-countries_ repository and the WorldClim_ dataset.
+`datasets/geo-countries`_ repository and the WorldClim_ dataset.
 
 To download and process the necessary datasets, run::
 
