@@ -40,10 +40,11 @@ install:
         conda config --add channels chilipp/label/master
         conda config --add channels chilipp
         conda update -q conda
-    - conda install xarray dask rasterio netCDF4
+    - conda install xarray dask rasterio netCDF4 codecov
     - conda info -a
     - conda list
     - pip install .
 
 script:
     - python setup.py test -a "-v"
+    - codecov
