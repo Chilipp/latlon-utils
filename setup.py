@@ -25,7 +25,7 @@ def readme():
 
 
 setup(name='latlon-utils',
-      version='0.0.1',
+      version='0.0.2',
       description=('Retrieve WorldClim climate and other information for '
                    'lat-lon grid cells'),
       long_description=readme(),
