@@ -26,8 +26,8 @@ def readme():
 
 setup(name='latlng-utils',
       version='0.0.1',
-      description=('Utility functions to retrieve information from the '
-                   'latitude and longitude'),
+      description=('Retrieve WorldClim climate and other information for '
+                   'lat-lon grid cells'),
       long_description=readme(),
       classifiers=[
         'Development Status :: 5 - Production/Stable',
