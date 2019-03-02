@@ -6,14 +6,18 @@ import xarray as xr
 import numpy as np
 import zipfile
 import glob
+import re
+import datetime as dt
 import tempfile
 from latlng_utils import (
-    get_data_dir, worldclim_variables, worldclim_resolutions)
+    get_data_dir, worldclim_variables, worldclim_resolutions, __version__)
 
 
 wc_base_url = 'http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/'
 
 SILENT = False
+
+unit_patt = re.compile(r'\(.+\)')
 
 
 def download_wc_variable(name, outdir=None, res='5m', lat=None, lon=None):
@@ -67,9 +71,11 @@ def download_wc_variable(name, outdir=None, res='5m', lat=None, lon=None):
     with tempfile.TemporaryDirectory(prefix='worldclim_') as download_dir:
         download_target = osp.join(download_dir, base)
 
+        url = wc_base_url + base
+
         if not SILENT:
-            print('Downloading ' + wc_base_url + base)
-        request.urlretrieve(wc_base_url + base, download_target)
+            print('Downloading ' + url)
+        request.urlretrieve(url, download_target)
 
         if not SILENT:
             print('Extracting ' + download_target)
@@ -90,6 +96,17 @@ def download_wc_variable(name, outdir=None, res='5m', lat=None, lon=None):
             sel['y'] = lat
         if lon is not None:
             sel['x'] = lon
+        da.attrs['long_name'] = unit_patt.sub(
+            '', worldclim_variables[name]).strip()
+        da.attrs['units'] = unit_patt.search(
+            worldclim_variables[name]).group()[1:-1]
+        da.attrs['history'] = (
+            '%s: Downloaded %s data with latlon-utils (%s) from %s' % (
+                dt.datetime.now().isoformat(), name, __version__, url))
+        da.attrs['reference'] = (
+            'Fick, S.E. and R.J. Hijmans, 2017. Worldclim 2: New 1-km spatial '
+            'resolution climate surfaces for global land areas. International '
+            'Journal of Climatology.')
         da.sel(**sel).rename({'x': 'lon', 'y': 'lat'}).to_netcdf(outfile)
     return outfile
 
