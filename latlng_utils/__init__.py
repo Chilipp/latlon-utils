@@ -9,9 +9,9 @@ import pandas as pd
 
 #: Variables in the WorldClim v2.0 dataset
 worldclim_variables = {
-    'tmin': 'minimum temperature (°C)',
-    'tmax': 'maximum temperature (°C)',
-    'tavg': 'maximum temperature (°C)',
+    'tmin': 'minimum temperature (degC)',
+    'tmax': 'maximum temperature (degC)',
+    'tavg': 'maximum temperature (degC)',
     'prec': 'precipitation (mm)',
     'srad': 'solar radiation (kJ m-2 day-1)',
     'wind': 'wind speed (m s-1)',
