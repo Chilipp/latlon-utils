@@ -149,7 +149,7 @@ def get_parser():
               "Default: %(default)s"), nargs='?',
         default=get_data_dir())
     parser.add_argument(
-        '-res', '--worldclim-resolution', default='5m',
+        '-res', '--worldclim-resolution', default='10m',
         choices=worldclim_resolutions,
         help="The resolution for the WorldClim data. Default: %(default)s")
     parser.add_argument(
@@ -165,13 +165,13 @@ def get_parser():
     return parser
 
 
-if __name__ == '__main__':
+def main(args=None):
     parser = get_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     # update global variables
-    lon = args.lon and slice(sorted(args.lon))
-    lat = args.lat and slice(sorted(args.lat)[::-1])
+    lon = args.lon and slice(*sorted(args.lon))
+    lat = args.lat and slice(*sorted(args.lat)[::-1])
     outdir = args.outdir
 
     # download WorldClim data
@@ -186,3 +186,14 @@ if __name__ == '__main__':
 
     # download countries.geojson
     download_geo_countries(outdir)
+
+
+def test_command_line():
+    with tempfile.TemporaryDirectory(prefix='worldclim_') as test_dir:
+        main((test_dir + ' -v tavg -lat 20 30 -lon 20 30 -res 10m').split())
+        assert osp.exists(osp.join(test_dir, 'tavg_10m.nc'))
+        assert osp.exists(osp.join(test_dir, 'countries.geojson'))
+
+
+if __name__ == '__main__':
+    main()
