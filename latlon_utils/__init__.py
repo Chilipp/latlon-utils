@@ -289,7 +289,8 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
             idx_lon = find_closest(nco.variables['lon'][:], lon)
             idx_lat = nco.variables['lat'].shape[0] - 1 - find_closest(
                 nco.variables['lat'][::-1], lat)
-            ret.loc[:, (v, months)] = nco.variables[v][:, idx_lat, idx_lon]
+            for i, (j, k) in enumerate(zip(idx_lat, idx_lon)):
+                ret.loc[slice(i, i+1), (v, months)] = nco.variables[v][:, j, k]
 
     # compute seasonal averages
     for var in variables:
