@@ -277,7 +277,8 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
     ret = pd.DataFrame(
         index=pd.MultiIndex.from_tuples(list(zip(lat, lon)),
                                         names=['lat', 'lon']),
-        columns=pd.MultiIndex.from_product([variables, cols]))
+        columns=pd.MultiIndex.from_product([variables, cols]),
+        dtype=float)
 
     res = get_wc_resolution(res)
 
