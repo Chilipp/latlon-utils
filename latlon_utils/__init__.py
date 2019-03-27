@@ -244,7 +244,7 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
                      jan        feb  ...        son       ann
         lat lon                        ...
         10  50   21.810730  22.687988  ...  10.666667  6.833333
-        11  51   18.416992  19.715759  ...  10.000000  7.833333
+        11  51   24.617249  24.678040  ...   7.666667  3.750000
         <BLANKLINE>
         [2 rows x 34 columns]
     """
