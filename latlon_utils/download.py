@@ -141,6 +141,39 @@ def download_geo_countries(outdir=None):
     return download_target
 
 
+def download_natural_earth_countries(outdir=None):
+    """Download the natural earth 10m admin 0 countries
+
+    Parameters
+    ----------
+    outdir: str
+        The target directory. If None, the default data directory for the
+        latlon_utils (see the :func:`latlon_utils.get_data_dir` function) is
+        used
+
+    Returns
+    -------
+    str
+        The path to the downloaded shapefile"""
+    if outdir is None:
+        outdir = get_data_dir()
+
+    if not osp.exists(outdir):
+        os.makedirs(outdir)
+    download_target = osp.join(outdir, 'ne_10m_admin_0_countries.zip')
+
+    url = ('https://www.naturalearthdata.com/http//www.naturalearthdata.com/'
+           'download/10m/cultural/ne_10m_admin_0_countries.zip')
+
+    if not SILENT:
+        print('Downloading %s to %s' % (url, download_target))
+    request.urlretrieve(url, download_target)
+    with zipfile.ZipFile(download_target) as f:
+        f.extractall(outdir)
+    os.remove(download_target)
+    return osp.splitext(download_target)[0] + '.shp'
+
+
 def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -186,6 +219,9 @@ def main(args=None):
 
     # download countries.geojson
     download_geo_countries(outdir)
+
+    # download natural earth
+    download_natural_earth_countries()
 
 
 def test_command_line():

@@ -74,14 +74,15 @@ def get_data_file(fname, download=True):
         if fname == 'countries.geojson':
             from latlon_utils.download import download_geo_countries
             download_geo_countries()
-            return ret
         elif fname in starmap(
                 '{}_{}.nc'.format,
                 product(worldclim_variables, worldclim_resolutions)):
             from latlon_utils.download import download_wc_variable
             var, res = osp.splitext(fname)[0].split('_')
             download_wc_variable(var, res=res)
-            return ret
+        elif fname == 'ne_10m_admin_0_countries.shp':
+            from latlon_utils.download import download_natural_earth_countries
+            download_natural_earth_countries()
         else:
             raise ValueError(
                 "Could not find %s in %s!" % (fname, get_data_dir()))
@@ -143,6 +144,42 @@ def get_country(lat, lon):
 
 def test_get_country():
     assert get_country(50, 10) == 'Germany'
+
+
+def get_country_gpd(lat, lon):
+    """Get the country using geopandas
+
+    Parameters
+    ----------
+    lat: float or np.ndarray of floats
+        The latitude between -90 and 90
+    lon: float or np.ndarray of floats
+        The longitude between -180 and 360
+
+    Returns
+    -------
+    str or np.ndarray of strings
+        The country name (or names if `lat` and `lon` are arrays)"""
+    import geopandas as gpd
+    from shapely.geometry import Point
+    nat_earth = get_data_file('ne_10m_admin_0_countries.shp')
+    ne_df = gpd.read_file(nat_earth)
+
+    squeeze = np.ndim(lat) == 0
+
+    points = pd.DataFrame(np.vstack([lon, lat]).T, columns=['lon', 'lat'])
+    points['geometry'] = list(map(tuple, points.values.tolist()))
+    points['geometry'] = points['geometry'].apply(Point)
+
+    points_gpd = gpd.GeoDataFrame(points, geometry='geometry')
+    points_gpd.crs = ne_df.crs
+
+    ret = gpd.sjoin(points_gpd, ne_df, how='left', op='within').ADMIN.values
+    return ret[0] if squeeze else ret
+
+
+def test_get_country_gpd():
+    assert get_country_gpd(50, 10) == 'Germany'
 
 
 def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
