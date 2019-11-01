@@ -182,7 +182,8 @@ def test_get_country_gpd():
     assert get_country_gpd(50, 10) == 'Germany'
 
 
-def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
+def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
+                load_data=False, data_files=None):
     """Get the country at the specific latitude and longitude
 
     Parameters
@@ -213,6 +214,14 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
     res: str
         The resolution to use. If None, it defaults to the
         ``LATLONRES`` environment variable or ``'10m'``
+    load_data: bool
+        If True, the entire netCDF file is loaded into memory which can speed
+        up the calculation if you have a lot of samples
+    data_files: str
+        If specified, these netcdf files will be used to extract the climate
+        information, rather than the downloaded WorldClim data. It requires
+        one file per variable in `variables`. Data files need to have monthly
+        resolution
 
     Returns
     -------
@@ -319,16 +328,30 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None):
 
     res = get_wc_resolution(res)
 
-    data_files = [get_data_file(v + '_' + res + '.nc') for v in variables]
+    if data_files is None:
+        data_files = [get_data_file(v + '_' + res + '.nc') for v in variables]
 
     for v, fname in zip(variables, data_files):
         with nc.Dataset(fname) as nco:
+            latdim, londim = nco.variables[v].dimensions[-2:]
+            lat_inverted = np.diff(nco.variables[latdim][:2])[0] < 0
             nco.set_auto_mask(False)
-            idx_lon = find_closest(nco.variables['lon'][:], lon)
-            idx_lat = nco.variables['lat'].shape[0] - 1 - find_closest(
-                nco.variables['lat'][::-1], lat)
+            idx_lon = find_closest(nco.variables[londim][:], lon)
+            if lat_inverted:
+                idx_lat = nco.variables[latdim].shape[0] - 1 - find_closest(
+                    nco.variables[latdim][::-1], lat)
+            else:
+                idx_lat = find_closest(nco.variables[latdim][:], lat)
+            if load_data:
+                var = nco.variables[v][:]
+            else:
+                var = nco.variables[v]
+            unique_cells = set(zip(idx_lat, idx_lon))
+            climates = {}
+            for j, k in unique_cells:
+                climates[(j, k)] = var[:, j, k]
             for i, (j, k) in enumerate(zip(idx_lat, idx_lon)):
-                ret.loc[slice(i, i+1), (v, months)] = nco.variables[v][:, j, k]
+                ret.loc[slice(i, i+1), (v, months)] = climates[(j, k)]
 
     # compute seasonal averages
     for var in variables:
