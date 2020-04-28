@@ -2,6 +2,7 @@
 import os
 import os.path as osp
 import json
+import contextlib
 from itertools import starmap, product
 import numpy as np
 import pandas as pd
@@ -182,6 +183,14 @@ def test_get_country_gpd():
     assert get_country_gpd(50, 10) == 'Germany'
 
 
+@contextlib.contextmanager
+def seterr(*args, **kwargs):
+    """Temporarily modify the warning settings for numpy"""
+    old_settings = np.seterr(*args, **kwargs)
+    yield
+    np.seterr(**old_settings)
+
+
 def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
                 load_data=False, data_files=None, radius=None,
                 valid=[-1000, 1000]):
@@ -312,15 +321,14 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
         return idx
 
     def is_valid(arr):
-        return ~(np.isinf(val) | np.isnan(val) |
-                 (val < valid[0]) | (val > valid[1]))
+        with seterr(invalid='ignore'):
+            return ~(np.isinf(arr) | np.isnan(arr) |
+                     (arr < valid[0]) | (arr > valid[1]))
 
     def get_closest(j, k):
         surrounding = var[
             :, j-radius:j+radius, k-radius:k+radius].astype(float)
-        surrounding[np.isnan(surrounding) |
-                    (surrounding < valid[0]) |
-                    (surrounding > valid[1])] = np.nan
+        surrounding[~is_valid(surrounding)] = np.nan
         if not np.isnan(surrounding).all():
 
             surrounding = surrounding.reshape((
