@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 __author__ = 'Philipp S. Sommer'
 
@@ -183,7 +183,8 @@ def test_get_country_gpd():
 
 
 def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
-                load_data=False, data_files=None):
+                load_data=False, data_files=None, radius=None,
+                valid=[-1000, 1000]):
     """Get the country at the specific latitude and longitude
 
     Parameters
@@ -222,6 +223,11 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
         information, rather than the downloaded WorldClim data. It requires
         one file per variable in `variables`. Data files need to have monthly
         resolution
+    radius: int
+        Number of grid cells surrounding the closest one, in case the value at
+        the exact position is NaN
+    valid: list(float, float)
+        The valid range for the variable
 
     Returns
     -------
@@ -305,6 +311,39 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
         idx[(idx > 0) & (idx < arr.size) & (diff > diffprev)] -= 1
         return idx
 
+    def is_valid(arr):
+        return ~(np.isinf(val) | np.isnan(val) |
+                 (val < valid[0]) | (val > valid[1]))
+
+    def get_closest(j, k):
+        surrounding = var[
+            :, j-radius:j+radius, k-radius:k+radius].astype(float)
+        surrounding[np.isnan(surrounding) |
+                    (surrounding < valid[0]) |
+                    (surrounding > valid[1])] = np.nan
+        if not np.isnan(surrounding).all():
+
+            surrounding = surrounding.reshape((
+                surrounding.shape[0], -1))
+
+            surr_lat = nco.variables[latdim][j-radius:j+radius]
+            surr_lon = nco.variables[londim][k-radius:k+radius]
+            surr_lon, surr_lat = np.meshgrid(
+                surr_lon, surr_lat)
+
+            surr_lon = surr_lon.ravel()
+            surr_lat = surr_lat.ravel()
+
+            points = np.dstack((surr_lon, surr_lat))[0]
+            center = [[nco.variables[londim][k],
+                       nco.variables[latdim][j]]]
+            dist = np.linalg.norm(points - center, axis=-1)
+            sorted_surrounding = surrounding[:, dist.argsort()]
+            for l in range(sorted_surrounding.shape[-1]):
+                if not np.isnan(
+                        sorted_surrounding[:, l]).all():
+                    return sorted_surrounding[:, l]
+
     squeeze = False
     if np.ndim(lat) == 0:
         lat = [lat]
@@ -328,6 +367,9 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
 
     res = get_wc_resolution(res)
 
+    if radius:
+        radius += 1
+
     if data_files is None:
         data_files = [get_data_file(v + '_' + res + '.nc') for v in variables]
 
@@ -349,7 +391,16 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
             unique_cells = set(zip(idx_lat, idx_lon))
             climates = {}
             for j, k in unique_cells:
-                climates[(j, k)] = var[:, j, k]
+                val = var[:, j, k].astype(float)
+                if not is_valid(val).all():
+                    if radius:
+                        val = get_closest(j, k)
+                        if val is None:
+                            val = np.nan
+                    else:
+                        val = np.nan
+
+                climates[(j, k)] = val
             for i, (j, k) in enumerate(zip(idx_lat, idx_lon)):
                 ret.loc[slice(i, i+1), (v, months)] = climates[(j, k)]
 
@@ -385,3 +436,11 @@ def test_get_climate():
                 pmonth[5:8].mean(), pmonth[8:11].mean(), pmonth.mean()]
 
     assert_allclose(get_climate(lat, lon), ref)
+
+
+def test_closest_get_climate():
+    lat, lon = 45.55, -5.
+
+    assert get_climate(lat, lon).isnull().values.all()
+    assert get_climate(lat, lon, radius=5).isnull().values.all()
+    assert get_climate(lat, lon, radius=20).notnull().values.all()
