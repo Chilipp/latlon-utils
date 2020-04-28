@@ -401,8 +401,10 @@ def get_climate(lat, lon, variables=['tavg', 'prec'], res=None,
                         val = np.nan
 
                 climates[(j, k)] = val
+            ret.reset_index(inplace=True)
             for i, (j, k) in enumerate(zip(idx_lat, idx_lon)):
                 ret.loc[slice(i, i+1), (v, months)] = climates[(j, k)]
+            ret.set_index(['lat', 'lon'], inplace=True)
 
     # compute seasonal averages
     for var in variables:
