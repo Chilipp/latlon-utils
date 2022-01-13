@@ -13,7 +13,7 @@ from latlon_utils import (
     get_data_dir, worldclim_variables, worldclim_resolutions, __version__)
 
 
-wc_base_url = 'http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/'
+wc_base_url = 'http://biogeo.ucdavis.edu/data/worldclim/v2.1/base/'
 
 SILENT = False
 
@@ -65,7 +65,7 @@ def download_wc_variable(name, outdir=None, res='5m', lat=None, lon=None):
 
     if not osp.exists(outdir):
         os.makedirs(outdir)
-    base = 'wc2.0_%s_%s.zip' % (res, name)
+    base = 'wc2.1_%s_%s.zip' % (res, name)
     outfile = osp.join(outdir, name + '_' + res + '.nc')
 
     with tempfile.TemporaryDirectory(prefix='worldclim_') as download_dir:
@@ -83,7 +83,7 @@ def download_wc_variable(name, outdir=None, res='5m', lat=None, lon=None):
             f.extractall(download_dir)
 
         tiffs = sorted(glob.glob(osp.join(download_dir,
-                                          'wc2.0_%s_%s_??.tif' % (res, name))))
+                                          'wc2.1_%s_%s_??.tif' % (res, name))))
         da = xr.concat(list(map(xr.open_rasterio, tiffs)),
                        dim=xr.Variable(('month', ), np.arange(1, 13)))
         da.encoding = dict(zlib=True, complevel=4, least_significant_digit=4)
