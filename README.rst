@@ -99,7 +99,7 @@ Data download
 -------------
 This package is built upon freely available datasets but does not contain any
 data. This data is downloaded on request (see the next section). In particular,
-the `get_climate` method uses the data from [WorldClim2.0]_, the `get_country`
+the `get_climate` method uses the data from [WorldClim2.1]_, the `get_country`
 function uses the `datasets/geo-countries`_ repository.
 
 Download directory
@@ -133,9 +133,9 @@ variable. To use, for example the 5 minutes resolutions, simply run::
 
 References
 ----------
-.. [WorldClim2.0] Fick, S.E. and R.J. Hijmans, 2017. Worldclim 2: New 1-km spatial resolution climate surfaces for global land areas. International Journal of Climatology. http://worldclim.org/
+.. [WorldClim2.1] Fick, S.E. and R.J. Hijmans, 2017. Worldclim 2: New 1-km spatial resolution climate surfaces for global land areas. International Journal of Climatology. http://worldclim.org/
 
-.. _WorldClim: http://worldclim.org/
+.. _WorldClim: https://worldclim.org/
 .. _datasets/geo-countries: https://github.com/datasets/geo-countries
 .. _xarray: http://xarray.pydata.org/en/stable/
 .. _rasterio: https://rasterio.readthedocs.io/en/stable/
