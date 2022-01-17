@@ -162,8 +162,8 @@ def download_natural_earth_countries(outdir=None):
         os.makedirs(outdir)
     download_target = osp.join(outdir, 'ne_10m_admin_0_countries.zip')
 
-    url = ('https://www.naturalearthdata.com/http//www.naturalearthdata.com/'
-           'download/10m/cultural/ne_10m_admin_0_countries.zip')
+    url = ('https://naciscdn.org/naturalearth/'
+           '10m/cultural/ne_10m_admin_0_countries.zip')
 
     if not SILENT:
         print('Downloading %s to %s' % (url, download_target))
