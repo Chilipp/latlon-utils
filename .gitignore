@@ -68,3 +68,4 @@ target/
 latlon_utils/data/*
 !latlon_utils/data/README.rst
 
+.mypy_cache
